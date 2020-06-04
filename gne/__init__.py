@@ -1,5 +1,5 @@
 from .utils import pre_parse, remove_noise_node, config, html2element
-from .extractor import ContentExtractor, TitleExtractor, TimeExtractor, AuthorExtractor
+from gne.extractor import ContentExtractor, TitleExtractor, TimeExtractor, AuthorExtractor, ReprintExtractor
 
 
 class GeneralNewsExtractor:
@@ -7,6 +7,7 @@ class GeneralNewsExtractor:
                 html,
                 title_xpath='',
                 author_xpath='',
+                reprint_xpath='',
                 publish_time_xpath='',
                 host='',
                 noise_node_list=None,
@@ -19,11 +20,13 @@ class GeneralNewsExtractor:
         title = TitleExtractor().extract(element, title_xpath=title_xpath)
         publish_time = TimeExtractor().extractor(element, publish_time_xpath=publish_time_xpath)
         author = AuthorExtractor().extractor(element, author_xpath=author_xpath)
+        reprint = ReprintExtractor().extractor(element, reprint_xpath=reprint_xpath)
         element = pre_parse(element)
         remove_noise_node(element, noise_node_list)
         content = ContentExtractor().extract(element, host, with_body_html)
         result = {'title': title,
                   'author': author,
+                  'reprint': reprint,
                   'publish_time': publish_time,
                   'content': content[0][1]['text'],
                   'images': content[0][1]['images']}
